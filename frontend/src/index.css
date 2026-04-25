@@ -1,0 +1,151 @@
+/* ── Google Fonts ─────────────────────────────────────────── */
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Nunito:wght@400;500;600;700;800&display=swap');
+
+@import "tailwindcss";
+
+/* ── Design Tokens ───────────────────────────────────────── */
+:root {
+  --teal-50:  #f0fdfa;
+  --teal-100: #ccfbf1;
+  --teal-200: #99f6e4;
+  --teal-400: #2dd4bf;
+  --teal-500: #14b8a6;
+  --teal-600: #0d9488;
+  --teal-700: #0f766e;
+
+  --orange-50:  #fff7ed;
+  --orange-100: #ffedd5;
+  --orange-200: #fed7aa;
+  --orange-400: #fb923c;
+  --orange-500: #f97316;
+
+  --bg-primary:   #f8fffe;
+  --bg-card:      #ffffff;
+  --bg-sidebar:   #1a2e2b;
+
+  --text-primary:   #1a2e2b;
+  --text-secondary: #4b6b66;
+  --text-muted:     #8ba8a4;
+
+  --border: rgba(20, 184, 166, 0.15);
+  --shadow-sm: 0 2px 8px rgba(20, 184, 166, 0.08);
+  --shadow-md: 0 4px 24px rgba(20, 184, 166, 0.12);
+  --shadow-lg: 0 8px 40px rgba(20, 184, 166, 0.18);
+
+  --radius-sm: 10px;
+  --radius-md: 16px;
+  --radius-lg: 24px;
+  --radius-xl: 32px;
+}
+
+/* ── Base ────────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  margin: 0;
+  font-family: 'Plus Jakarta Sans', 'Nunito', sans-serif;
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ── Custom Scrollbar ─────────────────────────────────────── */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb {
+  background: var(--teal-200);
+  border-radius: 99px;
+}
+::-webkit-scrollbar-thumb:hover { background: var(--teal-400); }
+
+/* ── Animations ──────────────────────────────────────────── */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0);    }
+}
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+@keyframes slideInLeft {
+  from { opacity: 0; transform: translateX(-24px); }
+  to   { opacity: 1; transform: translateX(0);     }
+}
+@keyframes slideInRight {
+  from { opacity: 0; transform: translateX(100%); }
+  to   { opacity: 1; transform: translateX(0);    }
+}
+@keyframes pulse-soft {
+  0%, 100% { transform: scale(1);    opacity: 1;    }
+  50%       { transform: scale(1.05); opacity: 0.85; }
+}
+@keyframes spin-slow {
+  to { transform: rotate(360deg); }
+}
+
+.animate-fade-up        { animation: fadeUp 0.45s ease both; }
+.animate-fade-in        { animation: fadeIn 0.35s ease both; }
+.animate-slide-in-left  { animation: slideInLeft 0.4s ease both; }
+.animate-slide-in-right { animation: slideInRight 0.35s cubic-bezier(0.16,1,0.3,1) both; }
+.animate-pulse-soft     { animation: pulse-soft 2.5s ease-in-out infinite; }
+
+/* stagger helpers */
+.delay-100 { animation-delay: 0.10s; }
+.delay-200 { animation-delay: 0.20s; }
+.delay-300 { animation-delay: 0.30s; }
+.delay-400 { animation-delay: 0.40s; }
+.delay-500 { animation-delay: 0.50s; }
+
+/* ── Glass morphism card ─────────────────────────────────── */
+.glass-card {
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-md);
+  border-radius: var(--radius-lg);
+  transition: box-shadow 0.25s ease, transform 0.25s ease;
+}
+.glass-card:hover {
+  box-shadow: var(--shadow-lg);
+  transform: translateY(-2px);
+}
+
+/* ── Gradient text ───────────────────────────────────────── */
+.gradient-text {
+  background: linear-gradient(135deg, var(--teal-600) 0%, var(--orange-500) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ── Teal pill badge ─────────────────────────────────────── */
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 10px;
+  border-radius: 99px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+/* ── Timeline vertical line ──────────────────────────────── */
+.timeline-line {
+  position: absolute;
+  left: 19px;
+  top: 40px;
+  bottom: 0;
+  width: 2px;
+  background: linear-gradient(to bottom, var(--teal-400), transparent);
+}
+
+/* ── Input focus ring override ───────────────────────────── */
+input:focus, select:focus, textarea:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(20, 184, 166, 0.18);
+}
