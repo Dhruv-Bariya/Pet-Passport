@@ -1,3 +1,4 @@
+
 /**
  * DailyLog.js — Mongoose Model
  * ----------------------------
@@ -36,6 +37,11 @@ const dailyLogSchema = new mongoose.Schema(
       type:    String,
       default: '',
       trim:    true,
+    },
+    weight: {
+      type:    Number,
+      min:     0,
+      default: null,
     },
   },
   { timestamps: true }
