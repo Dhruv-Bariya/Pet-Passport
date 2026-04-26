@@ -12,6 +12,7 @@
 const express  = require('express');
 const router   = express.Router();
 const DailyLog = require('../models/DailyLog');
+const Pet      = require('../models/Pet');
 
 /* ── GET /api/logs ──────────────────────────────────────── */
 router.get('/', async (req, res) => {
@@ -44,6 +45,14 @@ router.post('/', async (req, res) => {
   try {
     const log   = new DailyLog(req.body);
     const saved = await log.save();
+    
+    // If a weight was included, automatically push it to the pet's weightHistory
+    if (req.body.weight !== undefined && req.body.weight !== null && req.body.weight !== '') {
+      await Pet.findByIdAndUpdate(req.body.petId, {
+        $push: { weightHistory: { date: req.body.date || new Date(), weight: Number(req.body.weight) } }
+      });
+    }
+    
     res.status(201).json(saved);
   } catch (err) {
     res.status(400).json({ message: err.message });
