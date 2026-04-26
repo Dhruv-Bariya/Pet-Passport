@@ -3,7 +3,7 @@
  */
 import React, { useState, useEffect } from 'react';
 import { format, parseISO } from 'date-fns';
-import { PlusCircle, X, CheckCircle, Utensils, Heart, Pill, Loader2, AlertTriangle } from 'lucide-react';
+import { PlusCircle, X, CheckCircle, Utensils, Heart, Pill, Loader2, AlertTriangle, Scale } from 'lucide-react';
 import { usePet } from '../context/PetContext';
 import { getLogsByPet, createLog, deleteLog } from '../api/petApi';
 import { moodConfig } from '../data/mockData';
@@ -15,13 +15,13 @@ const moodOptions = Object.entries(moodConfig).map(([value, cfg]) => ({
 
 const emptyForm = {
   date: new Date().toISOString().slice(0, 10),
-  foodIntake: '', mood: 'happy', medicationGiven: false, notes: '',
+  foodIntake: '', mood: 'happy', medicationGiven: false, notes: '', weight: '',
 };
 
 const inputSt = { border: '1.5px solid var(--border)', background: '#f8fffe', color: 'var(--text-primary)' };
 
 export default function DailyLogs() {
-  const { activePet } = usePet();
+  const { activePet, refreshPets } = usePet();
   const [logs,       setLogs]       = useState([]);
   const [loading,    setLoading]    = useState(false);
   const [submitting, setSubmitting] = useState(false);
@@ -51,6 +51,12 @@ export default function DailyLogs() {
       setSubmitting(true);
       const res = await createLog({ ...form, petId: activePet._id });
       setLogs(prev => [res.data, ...prev]);
+      
+      // If weight was added, refresh the active pet so the dashboard chart updates!
+      if (form.weight) {
+        await refreshPets();
+      }
+
       setForm(emptyForm); setShowForm(false);
       setSaved(true); setTimeout(() => setSaved(false), 3000);
     } catch (e) {
@@ -121,6 +127,10 @@ export default function DailyLogs() {
               <textarea name="foodIntake" value={form.foodIntake} onChange={handleChange} placeholder="e.g. Royal Canin — 300g x2" required rows={2} className="w-full px-4 py-3 rounded-2xl text-sm border resize-none" style={inputSt} />
             </label>
             <label className="block mb-4">
+              <span className="text-xs font-semibold uppercase tracking-wider mb-1 flex items-center gap-1" style={{ color: 'var(--text-muted)' }}><Scale size={12} /> Weight (kg) - Optional</span>
+              <input type="number" step="0.01" name="weight" value={form.weight} onChange={handleChange} placeholder="e.g. 15.2" className="w-full px-4 py-3 rounded-2xl text-sm border" style={inputSt} />
+            </label>
+            <label className="block mb-4">
               <span className="text-xs font-semibold uppercase tracking-wider mb-1 flex items-center gap-1" style={{ color: 'var(--text-muted)' }}><Heart size={12} /> Mood</span>
               <select name="mood" value={form.mood} onChange={handleChange} className="w-full px-4 py-3 rounded-2xl text-sm border cursor-pointer" style={inputSt}>
                 {moodOptions.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
@@ -164,6 +174,7 @@ export default function DailyLogs() {
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center flex-wrap gap-2 mb-2">
                     <MoodBadge mood={log.mood} />
+                    {log.weight && <span className="pill" style={{ background: '#e0f2fe', color: '#0284c7' }}>⚖️ {log.weight} kg</span>}
                     {log.medicationGiven && <span className="pill" style={{ background: '#ede9fe', color: '#7c3aed' }}>💊 Med given</span>}
                   </div>
                   <p className="text-sm font-semibold mb-1 flex items-center gap-1.5" style={{ color: 'var(--text-primary)' }}>
